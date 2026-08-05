@@ -136,6 +136,13 @@ function SalonShell() {
           <CalendarDays className="size-5" /> Today
         </Link>
         <Link
+          to="/app/reports"
+          className="flex flex-1 flex-col items-center gap-1 py-2 text-xs text-muted-foreground"
+          activeProps={{ className: "text-primary" }}
+        >
+          <BarChart3 className="size-5" /> Reports
+        </Link>
+        <Link
           to="/app/settings"
           className="flex flex-1 flex-col items-center gap-1 py-2 text-xs text-muted-foreground"
           activeProps={{ className: "text-primary" }}
@@ -154,6 +161,13 @@ function SalonShell() {
           Today
         </Link>
         <Link
+          to="/app/reports"
+          className="rounded-full bg-card px-4 py-1.5 text-sm shadow-sm"
+          activeProps={{ className: "bg-primary text-primary-foreground" }}
+        >
+          Reports
+        </Link>
+        <Link
           to="/app/settings"
           className="rounded-full bg-card px-4 py-1.5 text-sm shadow-sm"
           activeProps={{ className: "bg-primary text-primary-foreground" }}
@@ -161,6 +175,7 @@ function SalonShell() {
           Settings
         </Link>
       </nav>
+
     </div>
   );
 }
