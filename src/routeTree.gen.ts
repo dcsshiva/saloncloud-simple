@@ -16,6 +16,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
+import { Route as BookSalonSlugRouteImport } from './routes/book/$salonSlug'
 import { Route as AdminshellAdminIndexRouteImport } from './routes/_adminshell/admin/index'
 import { Route as AdminshellAdminApprovalsRouteImport } from './routes/_adminshell/admin/approvals'
 import { Route as AdminshellAdminPlansRouteImport } from './routes/_adminshell/admin/plans'
@@ -55,6 +56,11 @@ const SignupRoute = SignupRouteImport.update({
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookSalonSlugRoute = BookSalonSlugRouteImport.update({
+  id: '/book/$salonSlug',
+  path: '/book/$salonSlug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminshellAdminIndexRoute = AdminshellAdminIndexRouteImport.update({
@@ -100,6 +106,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin/login': typeof AdminLoginRoute
+  '/book/$salonSlug': typeof BookSalonSlugRoute
   '/admin/approvals': typeof AdminshellAdminApprovalsRoute
   '/admin/plans': typeof AdminshellAdminPlansRoute
   '/admin/reports': typeof AdminshellAdminReportsRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin/login': typeof AdminLoginRoute
+  '/book/$salonSlug': typeof BookSalonSlugRoute
   '/admin/approvals': typeof AdminshellAdminApprovalsRoute
   '/admin/plans': typeof AdminshellAdminPlansRoute
   '/admin/reports': typeof AdminshellAdminReportsRoute
@@ -131,6 +139,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin/login': typeof AdminLoginRoute
+  '/book/$salonSlug': typeof BookSalonSlugRoute
   '/_adminshell/admin/approvals': typeof AdminshellAdminApprovalsRoute
   '/_adminshell/admin/plans': typeof AdminshellAdminPlansRoute
   '/_adminshell/admin/reports': typeof AdminshellAdminReportsRoute
@@ -147,6 +156,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin/login'
+    | '/book/$salonSlug'
     | '/admin/approvals'
     | '/admin/plans'
     | '/admin/reports'
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin/login'
+    | '/book/$salonSlug'
     | '/admin/approvals'
     | '/admin/plans'
     | '/admin/reports'
@@ -177,6 +188,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin/login'
+    | '/book/$salonSlug'
     | '/_adminshell/admin/approvals'
     | '/_adminshell/admin/plans'
     | '/_adminshell/admin/reports'
@@ -194,6 +206,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  BookSalonSlugRoute: typeof BookSalonSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -245,6 +258,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/login'
       fullPath: '/admin/login'
       preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/$salonSlug': {
+      id: '/book/$salonSlug'
+      path: '/book/$salonSlug'
+      fullPath: '/book/$salonSlug'
+      preLoaderRoute: typeof BookSalonSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_adminshell/admin/': {
@@ -341,6 +361,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
   AdminLoginRoute: AdminLoginRoute,
+  BookSalonSlugRoute: BookSalonSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
