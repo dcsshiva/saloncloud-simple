@@ -11,6 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminshellRouteRouteImport } from './routes/_adminshell/route'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminshellAdminIndexRouteImport } from './routes/_adminshell/admin/index'
 import { Route as AdminshellAdminApprovalsRouteImport } from './routes/_adminshell/admin/approvals'
@@ -24,6 +27,21 @@ const IndexRoute = IndexRouteImport.update({
 } as any)
 const AdminshellRouteRoute = AdminshellRouteRouteImport.update({
   id: '/_adminshell',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
@@ -55,6 +73,9 @@ const AdminshellAdminReportsRoute = AdminshellAdminReportsRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/signup': typeof SignupRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/approvals': typeof AdminshellAdminApprovalsRoute
   '/admin/plans': typeof AdminshellAdminPlansRoute
@@ -63,6 +84,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/signup': typeof SignupRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/approvals': typeof AdminshellAdminApprovalsRoute
   '/admin/plans': typeof AdminshellAdminPlansRoute
@@ -73,6 +97,9 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_adminshell': typeof AdminshellRouteRouteWithChildren
+  '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/signup': typeof SignupRoute
   '/admin/login': typeof AdminLoginRoute
   '/_adminshell/admin/approvals': typeof AdminshellAdminApprovalsRoute
   '/_adminshell/admin/plans': typeof AdminshellAdminPlansRoute
@@ -83,6 +110,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/login'
+    | '/reset-password'
+    | '/signup'
     | '/admin/login'
     | '/admin/approvals'
     | '/admin/plans'
@@ -91,6 +121,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/login'
+    | '/reset-password'
+    | '/signup'
     | '/admin/login'
     | '/admin/approvals'
     | '/admin/plans'
@@ -100,6 +133,9 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_adminshell'
+    | '/login'
+    | '/reset-password'
+    | '/signup'
     | '/admin/login'
     | '/_adminshell/admin/approvals'
     | '/_adminshell/admin/plans'
@@ -110,6 +146,9 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminshellRouteRoute: typeof AdminshellRouteRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  SignupRoute: typeof SignupRoute
   AdminLoginRoute: typeof AdminLoginRoute
 }
 
@@ -127,6 +166,27 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AdminshellRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/login': {
@@ -188,6 +248,9 @@ const AdminshellRouteRouteWithChildren = AdminshellRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminshellRouteRoute: AdminshellRouteRouteWithChildren,
+  LoginRoute: LoginRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  SignupRoute: SignupRoute,
   AdminLoginRoute: AdminLoginRoute,
 }
 export const routeTree = rootRouteImport
