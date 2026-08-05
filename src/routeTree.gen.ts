@@ -21,6 +21,7 @@ import { Route as AdminshellAdminApprovalsRouteImport } from './routes/_adminshe
 import { Route as AdminshellAdminPlansRouteImport } from './routes/_adminshell/admin/plans'
 import { Route as AdminshellAdminReportsRouteImport } from './routes/_adminshell/admin/reports'
 import { Route as SalonshellAppIndexRouteImport } from './routes/_salonshell/app/index'
+import { Route as SalonshellAppReportsRouteImport } from './routes/_salonshell/app/reports'
 import { Route as SalonshellAppSettingsRouteImport } from './routes/_salonshell/app/settings'
 
 const IndexRoute = IndexRouteImport.update({
@@ -82,6 +83,11 @@ const SalonshellAppIndexRoute = SalonshellAppIndexRouteImport.update({
   path: '/app/',
   getParentRoute: () => SalonshellRouteRoute,
 } as any)
+const SalonshellAppReportsRoute = SalonshellAppReportsRouteImport.update({
+  id: '/app/reports',
+  path: '/app/reports',
+  getParentRoute: () => SalonshellRouteRoute,
+} as any)
 const SalonshellAppSettingsRoute = SalonshellAppSettingsRouteImport.update({
   id: '/app/settings',
   path: '/app/settings',
@@ -97,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/admin/approvals': typeof AdminshellAdminApprovalsRoute
   '/admin/plans': typeof AdminshellAdminPlansRoute
   '/admin/reports': typeof AdminshellAdminReportsRoute
+  '/app/reports': typeof SalonshellAppReportsRoute
   '/app/settings': typeof SalonshellAppSettingsRoute
   '/admin/': typeof AdminshellAdminIndexRoute
   '/app/': typeof SalonshellAppIndexRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/admin/approvals': typeof AdminshellAdminApprovalsRoute
   '/admin/plans': typeof AdminshellAdminPlansRoute
   '/admin/reports': typeof AdminshellAdminReportsRoute
+  '/app/reports': typeof SalonshellAppReportsRoute
   '/app/settings': typeof SalonshellAppSettingsRoute
   '/admin': typeof AdminshellAdminIndexRoute
   '/app': typeof SalonshellAppIndexRoute
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   '/_adminshell/admin/approvals': typeof AdminshellAdminApprovalsRoute
   '/_adminshell/admin/plans': typeof AdminshellAdminPlansRoute
   '/_adminshell/admin/reports': typeof AdminshellAdminReportsRoute
+  '/_salonshell/app/reports': typeof SalonshellAppReportsRoute
   '/_salonshell/app/settings': typeof SalonshellAppSettingsRoute
   '/_adminshell/admin/': typeof AdminshellAdminIndexRoute
   '/_salonshell/app/': typeof SalonshellAppIndexRoute
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
     | '/admin/approvals'
     | '/admin/plans'
     | '/admin/reports'
+    | '/app/reports'
     | '/app/settings'
     | '/admin/'
     | '/app/'
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
     | '/admin/approvals'
     | '/admin/plans'
     | '/admin/reports'
+    | '/app/reports'
     | '/app/settings'
     | '/admin'
     | '/app'
@@ -169,6 +180,7 @@ export interface FileRouteTypes {
     | '/_adminshell/admin/approvals'
     | '/_adminshell/admin/plans'
     | '/_adminshell/admin/reports'
+    | '/_salonshell/app/reports'
     | '/_salonshell/app/settings'
     | '/_adminshell/admin/'
     | '/_salonshell/app/'
@@ -270,6 +282,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SalonshellAppIndexRouteImport
       parentRoute: typeof SalonshellRouteRoute
     }
+    '/_salonshell/app/reports': {
+      id: '/_salonshell/app/reports'
+      path: '/app/reports'
+      fullPath: '/app/reports'
+      preLoaderRoute: typeof SalonshellAppReportsRouteImport
+      parentRoute: typeof SalonshellRouteRoute
+    }
     '/_salonshell/app/settings': {
       id: '/_salonshell/app/settings'
       path: '/app/settings'
@@ -299,11 +318,13 @@ const AdminshellRouteRouteWithChildren = AdminshellRouteRoute._addFileChildren(
 )
 
 interface SalonshellRouteRouteChildren {
+  SalonshellAppReportsRoute: typeof SalonshellAppReportsRoute
   SalonshellAppSettingsRoute: typeof SalonshellAppSettingsRoute
   SalonshellAppIndexRoute: typeof SalonshellAppIndexRoute
 }
 
 const SalonshellRouteRouteChildren: SalonshellRouteRouteChildren = {
+  SalonshellAppReportsRoute: SalonshellAppReportsRoute,
   SalonshellAppSettingsRoute: SalonshellAppSettingsRoute,
   SalonshellAppIndexRoute: SalonshellAppIndexRoute,
 }
