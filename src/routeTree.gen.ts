@@ -25,6 +25,8 @@ import { Route as AdminshellAdminReportsRouteImport } from './routes/_adminshell
 import { Route as SalonshellAppIndexRouteImport } from './routes/_salonshell/app/index'
 import { Route as SalonshellAppReportsRouteImport } from './routes/_salonshell/app/reports'
 import { Route as SalonshellAppSettingsRouteImport } from './routes/_salonshell/app/settings'
+import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
+import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -105,6 +107,16 @@ const SalonshellAppSettingsRoute = SalonshellAppSettingsRouteImport.update({
   path: '/app/settings',
   getParentRoute: () => SalonshellRouteRoute,
 } as any)
+const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
+  id: '/lovable/email/auth/preview',
+  path: '/lovable/email/auth/preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
+  id: '/lovable/email/auth/webhook',
+  path: '/lovable/email/auth/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -121,6 +133,8 @@ export interface FileRoutesByFullPath {
   '/app/settings': typeof SalonshellAppSettingsRoute
   '/admin/': typeof AdminshellAdminIndexRoute
   '/app/': typeof SalonshellAppIndexRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -137,6 +151,8 @@ export interface FileRoutesByTo {
   '/app/settings': typeof SalonshellAppSettingsRoute
   '/admin': typeof AdminshellAdminIndexRoute
   '/app': typeof SalonshellAppIndexRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -156,6 +172,8 @@ export interface FileRoutesById {
   '/_salonshell/app/settings': typeof SalonshellAppSettingsRoute
   '/_adminshell/admin/': typeof AdminshellAdminIndexRoute
   '/_salonshell/app/': typeof SalonshellAppIndexRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -174,6 +192,8 @@ export interface FileRouteTypes {
     | '/app/settings'
     | '/admin/'
     | '/app/'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -190,6 +210,8 @@ export interface FileRouteTypes {
     | '/app/settings'
     | '/admin'
     | '/app'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
   id:
     | '__root__'
     | '/'
@@ -208,6 +230,8 @@ export interface FileRouteTypes {
     | '/_salonshell/app/settings'
     | '/_adminshell/admin/'
     | '/_salonshell/app/'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -220,6 +244,8 @@ export interface RootRouteChildren {
   SignupRoute: typeof SignupRoute
   AdminLoginRoute: typeof AdminLoginRoute
   BookSalonSlugRoute: typeof BookSalonSlugRoute
+  LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
+  LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -336,6 +362,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SalonshellAppSettingsRouteImport
       parentRoute: typeof SalonshellRouteRoute
     }
+    '/lovable/email/auth/preview': {
+      id: '/lovable/email/auth/preview'
+      path: '/lovable/email/auth/preview'
+      fullPath: '/lovable/email/auth/preview'
+      preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/auth/webhook': {
+      id: '/lovable/email/auth/webhook'
+      path: '/lovable/email/auth/webhook'
+      fullPath: '/lovable/email/auth/webhook'
+      preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -383,6 +423,8 @@ const rootRouteChildren: RootRouteChildren = {
   SignupRoute: SignupRoute,
   AdminLoginRoute: AdminLoginRoute,
   BookSalonSlugRoute: BookSalonSlugRoute,
+  LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
+  LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
