@@ -10,8 +10,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useServerFn } from "@tanstack/react-start";
+import { notifyAppointmentStatus } from "@/lib/notify.functions";
 import { formatTime, nowInTimezone } from "@/lib/slots";
 import { useSalon } from "@/lib/use-salon";
+
 
 export const Route = createFileRoute("/_salonshell/app/")({
   head: () => ({
