@@ -60,6 +60,8 @@ const statusLabels: Record<string, string> = {
 
 function SalonDashboard() {
   const queryClient = useQueryClient();
+  const notify = useServerFn(notifyAppointmentStatus);
+
   const { data: context, isLoading: loadingSalon } = useSalon();
   const salonId = context?.salon.id;
   const timezone = context?.salon.timezone ?? "Asia/Kolkata";
