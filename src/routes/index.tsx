@@ -16,7 +16,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Manage services, staff and appointments in one place. Customers book 30-minute slots with a quick mobile OTP.",
+          "Multi-tenant salon booking platform: manage services, staff and 30-minute appointment slots. Customers book with a mobile OTP, no account needed.",
       },
     ],
   }),

@@ -80,11 +80,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "SalonBook — Salon Appointment Booking Platform" },
+      { title: "SalonBook — Booking Software for Salons" },
       {
         name: "description",
         content:
-          "SalonBook lets salons manage services, staff and appointments while customers book 30-minute slots with a quick mobile OTP.",
+          "Multi-tenant salon booking platform: manage services, staff and 30-minute appointment slots. Customers book with a mobile OTP, no account needed.",
       },
       { name: "author", content: "SalonBook" },
       { property: "og:type", content: "website" },
@@ -92,6 +92,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "theme-color", content: "#7c2d3a" },
       { name: "mobile-web-app-capable", content: "yes" },
 
+      { property: "og:title", content: "SalonBook — Booking Software for Salons" },
+      { name: "twitter:title", content: "SalonBook — Booking Software for Salons" },
+      { property: "og:description", content: "Multi-tenant salon booking platform: manage services, staff and 30-minute appointment slots. Customers book with a mobile OTP, no account needed." },
+      { name: "twitter:description", content: "Multi-tenant salon booking platform: manage services, staff and 30-minute appointment slots. Customers book with a mobile OTP, no account needed." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/258341a7-6d77-4a47-a556-96a7c791a49f/id-preview-a6029328--b7c4e22b-665b-40a8-9935-a652ea0f8c1f.lovable.app-1785891417133.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/258341a7-6d77-4a47-a556-96a7c791a49f/id-preview-a6029328--b7c4e22b-665b-40a8-9935-a652ea0f8c1f.lovable.app-1785891417133.png" },
     ],
     links: [
       {
