@@ -21,6 +21,7 @@ import { Route as AdminshellAdminApprovalsRouteImport } from './routes/_adminshe
 import { Route as AdminshellAdminPlansRouteImport } from './routes/_adminshell/admin/plans'
 import { Route as AdminshellAdminReportsRouteImport } from './routes/_adminshell/admin/reports'
 import { Route as SalonshellAppIndexRouteImport } from './routes/_salonshell/app/index'
+import { Route as SalonshellAppSettingsRouteImport } from './routes/_salonshell/app/settings'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -81,6 +82,11 @@ const SalonshellAppIndexRoute = SalonshellAppIndexRouteImport.update({
   path: '/app/',
   getParentRoute: () => SalonshellRouteRoute,
 } as any)
+const SalonshellAppSettingsRoute = SalonshellAppSettingsRouteImport.update({
+  id: '/app/settings',
+  path: '/app/settings',
+  getParentRoute: () => SalonshellRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -91,6 +97,7 @@ export interface FileRoutesByFullPath {
   '/admin/approvals': typeof AdminshellAdminApprovalsRoute
   '/admin/plans': typeof AdminshellAdminPlansRoute
   '/admin/reports': typeof AdminshellAdminReportsRoute
+  '/app/settings': typeof SalonshellAppSettingsRoute
   '/admin/': typeof AdminshellAdminIndexRoute
   '/app/': typeof SalonshellAppIndexRoute
 }
@@ -103,6 +110,7 @@ export interface FileRoutesByTo {
   '/admin/approvals': typeof AdminshellAdminApprovalsRoute
   '/admin/plans': typeof AdminshellAdminPlansRoute
   '/admin/reports': typeof AdminshellAdminReportsRoute
+  '/app/settings': typeof SalonshellAppSettingsRoute
   '/admin': typeof AdminshellAdminIndexRoute
   '/app': typeof SalonshellAppIndexRoute
 }
@@ -118,6 +126,7 @@ export interface FileRoutesById {
   '/_adminshell/admin/approvals': typeof AdminshellAdminApprovalsRoute
   '/_adminshell/admin/plans': typeof AdminshellAdminPlansRoute
   '/_adminshell/admin/reports': typeof AdminshellAdminReportsRoute
+  '/_salonshell/app/settings': typeof SalonshellAppSettingsRoute
   '/_adminshell/admin/': typeof AdminshellAdminIndexRoute
   '/_salonshell/app/': typeof SalonshellAppIndexRoute
 }
@@ -132,6 +141,7 @@ export interface FileRouteTypes {
     | '/admin/approvals'
     | '/admin/plans'
     | '/admin/reports'
+    | '/app/settings'
     | '/admin/'
     | '/app/'
   fileRoutesByTo: FileRoutesByTo
@@ -144,6 +154,7 @@ export interface FileRouteTypes {
     | '/admin/approvals'
     | '/admin/plans'
     | '/admin/reports'
+    | '/app/settings'
     | '/admin'
     | '/app'
   id:
@@ -158,6 +169,7 @@ export interface FileRouteTypes {
     | '/_adminshell/admin/approvals'
     | '/_adminshell/admin/plans'
     | '/_adminshell/admin/reports'
+    | '/_salonshell/app/settings'
     | '/_adminshell/admin/'
     | '/_salonshell/app/'
   fileRoutesById: FileRoutesById
@@ -258,6 +270,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SalonshellAppIndexRouteImport
       parentRoute: typeof SalonshellRouteRoute
     }
+    '/_salonshell/app/settings': {
+      id: '/_salonshell/app/settings'
+      path: '/app/settings'
+      fullPath: '/app/settings'
+      preLoaderRoute: typeof SalonshellAppSettingsRouteImport
+      parentRoute: typeof SalonshellRouteRoute
+    }
   }
 }
 
@@ -280,10 +299,12 @@ const AdminshellRouteRouteWithChildren = AdminshellRouteRoute._addFileChildren(
 )
 
 interface SalonshellRouteRouteChildren {
+  SalonshellAppSettingsRoute: typeof SalonshellAppSettingsRoute
   SalonshellAppIndexRoute: typeof SalonshellAppIndexRoute
 }
 
 const SalonshellRouteRouteChildren: SalonshellRouteRouteChildren = {
+  SalonshellAppSettingsRoute: SalonshellAppSettingsRoute,
   SalonshellAppIndexRoute: SalonshellAppIndexRoute,
 }
 
