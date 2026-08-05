@@ -54,7 +54,13 @@ export function StaffSettings({ salonId, isOwner }: { salonId: string; isOwner: 
   });
 
   const updateStaff = useMutation({
-    mutationFn: async ({ id, patch }: { id: string; patch: Record<string, boolean> }) => {
+    mutationFn: async ({
+      id,
+      patch,
+    }: {
+      id: string;
+      patch: { can_manage_settings?: boolean; is_active?: boolean };
+    }) => {
       const { error } = await supabase.from("salon_staff").update(patch).eq("id", id);
       if (error) throw error;
     },
