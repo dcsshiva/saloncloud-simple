@@ -52,12 +52,17 @@ function SalonShell() {
         { event: "INSERT", schema: "public", table: "appointments", filter: `salon_id=eq.${salonId}` },
         (payload) => {
           const row = payload.new as { customer_name?: string };
-          toast.info(`New booking request from ${row.customer_name ?? "a customer"}`);
-          if (typeof Notification !== "undefined" && Notification.permission === "granted") {
-            new Notification("New booking request", {
-              body: `${row.customer_name ?? "A customer"} requested an appointment`,
-            });
-          }
+          const who = row.customer_name ?? "A customer";
+          toast.info(`New booking request from ${who}`, { duration: 10000 });
+          // Ringtone + OS banner. Sound needs the one-time unlock in Settings → Alerts.
+          alertUser("New booking request", `${who} requested an appointment`, readPrefs());
+          void queryClient.invalidateQueries({ queryKey: ["salon"] });
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "appointments", filter: `salon_id=eq.${salonId}` },
+        () => {
           void queryClient.invalidateQueries({ queryKey: ["salon"] });
         },
       )
@@ -67,6 +72,8 @@ function SalonShell() {
       void supabase.removeChannel(channel);
     };
   }, [salonId, queryClient]);
+
+
 
   const signOut = async () => {
     await queryClient.cancelQueries();
