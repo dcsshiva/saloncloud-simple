@@ -1,12 +1,14 @@
 import { useEffect } from "react";
 import { createFileRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Bell, CalendarDays, LogOut, Settings } from "lucide-react";
+import { BarChart3, Bell, CalendarDays, LogOut, Settings } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { alertUser, readPrefs } from "@/lib/ringtone";
 import { useSalon } from "@/lib/use-salon";
+
 
 export const Route = createFileRoute("/_salonshell")({
   ssr: false,
