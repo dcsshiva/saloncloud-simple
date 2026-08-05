@@ -19,6 +19,7 @@ export type Database = {
           appointment_date: string
           approved_at: string | null
           approved_by: string | null
+          booking_reference: string
           created_at: string | null
           customer_mobile: string
           customer_name: string
@@ -35,6 +36,7 @@ export type Database = {
           appointment_date: string
           approved_at?: string | null
           approved_by?: string | null
+          booking_reference?: string
           created_at?: string | null
           customer_mobile: string
           customer_name: string
@@ -51,6 +53,7 @@ export type Database = {
           appointment_date?: string
           approved_at?: string | null
           approved_by?: string | null
+          booking_reference?: string
           created_at?: string | null
           customer_mobile?: string
           customer_name?: string
@@ -237,6 +240,7 @@ export type Database = {
       }
       salon_staff: {
         Row: {
+          can_manage_settings: boolean
           created_at: string | null
           full_name: string
           id: string
@@ -247,6 +251,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          can_manage_settings?: boolean
           created_at?: string | null
           full_name: string
           id?: string
@@ -257,6 +262,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          can_manage_settings?: boolean
           created_at?: string | null
           full_name?: string
           id?: string
@@ -352,7 +358,9 @@ export type Database = {
           owner_name: string
           owner_user_id: string
           salon_name: string
+          slug: string
           status: string
+          timezone: string
           updated_at: string | null
         }
         Insert: {
@@ -367,7 +375,9 @@ export type Database = {
           owner_name: string
           owner_user_id: string
           salon_name: string
+          slug: string
           status?: string
+          timezone?: string
           updated_at?: string | null
         }
         Update: {
@@ -382,7 +392,9 @@ export type Database = {
           owner_name?: string
           owner_user_id?: string
           salon_name?: string
+          slug?: string
           status?: string
+          timezone?: string
           updated_at?: string | null
         }
         Relationships: []
@@ -481,6 +493,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_taken_slots: {
+        Args: { _date: string; _salon_id: string }
+        Returns: {
+          slot_end_time: string
+          slot_start_time: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -490,6 +509,18 @@ export type Database = {
       }
       is_salon_member: { Args: { _salon_id: string }; Returns: boolean }
       is_salon_public: { Args: { _salon_id: string }; Returns: boolean }
+      lookup_bookings: {
+        Args: { _mobile: string; _reference: string }
+        Returns: {
+          appointment_date: string
+          booking_reference: string
+          decline_reason: string
+          salon_name: string
+          service_name: string
+          slot_start_time: string
+          status: string
+        }[]
+      }
     }
     Enums: {
       app_role: "super_admin" | "salon_owner" | "executive"
