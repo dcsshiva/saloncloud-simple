@@ -10,33 +10,107 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminshellRouteRouteImport } from './routes/_adminshell/route'
+import { Route as AdminLoginRouteImport } from './routes/admin/login'
+import { Route as AdminshellAdminIndexRouteImport } from './routes/_adminshell/admin/index'
+import { Route as AdminshellAdminApprovalsRouteImport } from './routes/_adminshell/admin/approvals'
+import { Route as AdminshellAdminPlansRouteImport } from './routes/_adminshell/admin/plans'
+import { Route as AdminshellAdminReportsRouteImport } from './routes/_adminshell/admin/reports'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminshellRouteRoute = AdminshellRouteRouteImport.update({
+  id: '/_adminshell',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin/login',
+  path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminshellAdminIndexRoute = AdminshellAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => AdminshellRouteRoute,
+} as any)
+const AdminshellAdminApprovalsRoute =
+  AdminshellAdminApprovalsRouteImport.update({
+    id: '/admin/approvals',
+    path: '/admin/approvals',
+    getParentRoute: () => AdminshellRouteRoute,
+  } as any)
+const AdminshellAdminPlansRoute = AdminshellAdminPlansRouteImport.update({
+  id: '/admin/plans',
+  path: '/admin/plans',
+  getParentRoute: () => AdminshellRouteRoute,
+} as any)
+const AdminshellAdminReportsRoute = AdminshellAdminReportsRouteImport.update({
+  id: '/admin/reports',
+  path: '/admin/reports',
+  getParentRoute: () => AdminshellRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/approvals': typeof AdminshellAdminApprovalsRoute
+  '/admin/plans': typeof AdminshellAdminPlansRoute
+  '/admin/reports': typeof AdminshellAdminReportsRoute
+  '/admin/': typeof AdminshellAdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/approvals': typeof AdminshellAdminApprovalsRoute
+  '/admin/plans': typeof AdminshellAdminPlansRoute
+  '/admin/reports': typeof AdminshellAdminReportsRoute
+  '/admin': typeof AdminshellAdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_adminshell': typeof AdminshellRouteRouteWithChildren
+  '/admin/login': typeof AdminLoginRoute
+  '/_adminshell/admin/approvals': typeof AdminshellAdminApprovalsRoute
+  '/_adminshell/admin/plans': typeof AdminshellAdminPlansRoute
+  '/_adminshell/admin/reports': typeof AdminshellAdminReportsRoute
+  '/_adminshell/admin/': typeof AdminshellAdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin/login'
+    | '/admin/approvals'
+    | '/admin/plans'
+    | '/admin/reports'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/admin/login'
+    | '/admin/approvals'
+    | '/admin/plans'
+    | '/admin/reports'
+    | '/admin'
+  id:
+    | '__root__'
+    | '/'
+    | '/_adminshell'
+    | '/admin/login'
+    | '/_adminshell/admin/approvals'
+    | '/_adminshell/admin/plans'
+    | '/_adminshell/admin/reports'
+    | '/_adminshell/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminshellRouteRoute: typeof AdminshellRouteRouteWithChildren
+  AdminLoginRoute: typeof AdminLoginRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +122,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_adminshell': {
+      id: '/_adminshell'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AdminshellRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_adminshell/admin/': {
+      id: '/_adminshell/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminshellAdminIndexRouteImport
+      parentRoute: typeof AdminshellRouteRoute
+    }
+    '/_adminshell/admin/approvals': {
+      id: '/_adminshell/admin/approvals'
+      path: '/admin/approvals'
+      fullPath: '/admin/approvals'
+      preLoaderRoute: typeof AdminshellAdminApprovalsRouteImport
+      parentRoute: typeof AdminshellRouteRoute
+    }
+    '/_adminshell/admin/plans': {
+      id: '/_adminshell/admin/plans'
+      path: '/admin/plans'
+      fullPath: '/admin/plans'
+      preLoaderRoute: typeof AdminshellAdminPlansRouteImport
+      parentRoute: typeof AdminshellRouteRoute
+    }
+    '/_adminshell/admin/reports': {
+      id: '/_adminshell/admin/reports'
+      path: '/admin/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AdminshellAdminReportsRouteImport
+      parentRoute: typeof AdminshellRouteRoute
+    }
   }
 }
 
+interface AdminshellRouteRouteChildren {
+  AdminshellAdminApprovalsRoute: typeof AdminshellAdminApprovalsRoute
+  AdminshellAdminPlansRoute: typeof AdminshellAdminPlansRoute
+  AdminshellAdminReportsRoute: typeof AdminshellAdminReportsRoute
+  AdminshellAdminIndexRoute: typeof AdminshellAdminIndexRoute
+}
+
+const AdminshellRouteRouteChildren: AdminshellRouteRouteChildren = {
+  AdminshellAdminApprovalsRoute: AdminshellAdminApprovalsRoute,
+  AdminshellAdminPlansRoute: AdminshellAdminPlansRoute,
+  AdminshellAdminReportsRoute: AdminshellAdminReportsRoute,
+  AdminshellAdminIndexRoute: AdminshellAdminIndexRoute,
+}
+
+const AdminshellRouteRouteWithChildren = AdminshellRouteRoute._addFileChildren(
+  AdminshellRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminshellRouteRoute: AdminshellRouteRouteWithChildren,
+  AdminLoginRoute: AdminLoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
