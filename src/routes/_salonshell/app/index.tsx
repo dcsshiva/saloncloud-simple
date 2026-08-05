@@ -10,8 +10,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useServerFn } from "@tanstack/react-start";
+import { notifyAppointmentStatus } from "@/lib/notify.functions";
 import { formatTime, nowInTimezone } from "@/lib/slots";
 import { useSalon } from "@/lib/use-salon";
+
 
 export const Route = createFileRoute("/_salonshell/app/")({
   head: () => ({
@@ -57,6 +60,8 @@ const statusLabels: Record<string, string> = {
 
 function SalonDashboard() {
   const queryClient = useQueryClient();
+  const notify = useServerFn(notifyAppointmentStatus);
+
   const { data: context, isLoading: loadingSalon } = useSalon();
   const salonId = context?.salon.id;
   const timezone = context?.salon.timezone ?? "Asia/Kolkata";
@@ -102,7 +107,6 @@ function SalonDashboard() {
       status: string;
       declineReason?: string;
     }) => {
-      const { data: userData } = await supabase.auth.getUser();
       const { error } = await supabase
         .from("appointments")
         .update({
@@ -113,7 +117,19 @@ function SalonDashboard() {
         })
         .eq("id", appointment.id);
       if (error) throw error;
-      void userData;
+
+      // SMS fallback for customers who did not allow browser alerts.
+      try {
+        await notify({
+          data: {
+            appointmentId: appointment.id,
+            status: status as "approved" | "declined" | "completed" | "no_show",
+            ...(declineReason ? { reason: declineReason } : {}),
+          },
+        });
+      } catch {
+        /* the status change already succeeded; delivery is best effort */
+      }
     },
     onSuccess: () => {
       toast.success("Appointment updated");
@@ -123,6 +139,7 @@ function SalonDashboard() {
     },
     onError: () => toast.error("Could not update the appointment"),
   });
+
 
   if (loadingSalon) return <Skeleton className="h-64 w-full" />;
 

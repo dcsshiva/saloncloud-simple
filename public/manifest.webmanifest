@@ -1,0 +1,13 @@
+{
+  "name": "SalonBook — Salon Appointment Booking",
+  "short_name": "SalonBook",
+  "description": "Manage salon appointments, staff and services from any device.",
+  "start_url": "/app",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fdf8f4",
+  "theme_color": "#7c2d3a",
+  "icons": [
+    { "src": "/favicon.ico", "sizes": "48x48", "type": "image/x-icon" }
+  ]
+}

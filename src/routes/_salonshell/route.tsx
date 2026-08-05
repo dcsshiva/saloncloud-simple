@@ -1,12 +1,14 @@
 import { useEffect } from "react";
 import { createFileRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Bell, CalendarDays, LogOut, Settings } from "lucide-react";
+import { BarChart3, Bell, CalendarDays, LogOut, Settings } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { alertUser, readPrefs } from "@/lib/ringtone";
 import { useSalon } from "@/lib/use-salon";
+
 
 export const Route = createFileRoute("/_salonshell")({
   ssr: false,
@@ -50,12 +52,17 @@ function SalonShell() {
         { event: "INSERT", schema: "public", table: "appointments", filter: `salon_id=eq.${salonId}` },
         (payload) => {
           const row = payload.new as { customer_name?: string };
-          toast.info(`New booking request from ${row.customer_name ?? "a customer"}`);
-          if (typeof Notification !== "undefined" && Notification.permission === "granted") {
-            new Notification("New booking request", {
-              body: `${row.customer_name ?? "A customer"} requested an appointment`,
-            });
-          }
+          const who = row.customer_name ?? "A customer";
+          toast.info(`New booking request from ${who}`, { duration: 10000 });
+          // Ringtone + OS banner. Sound needs the one-time unlock in Settings → Alerts.
+          alertUser("New booking request", `${who} requested an appointment`, readPrefs());
+          void queryClient.invalidateQueries({ queryKey: ["salon"] });
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "appointments", filter: `salon_id=eq.${salonId}` },
+        () => {
           void queryClient.invalidateQueries({ queryKey: ["salon"] });
         },
       )
@@ -65,6 +72,8 @@ function SalonShell() {
       void supabase.removeChannel(channel);
     };
   }, [salonId, queryClient]);
+
+
 
   const signOut = async () => {
     await queryClient.cancelQueries();
@@ -127,6 +136,13 @@ function SalonShell() {
           <CalendarDays className="size-5" /> Today
         </Link>
         <Link
+          to="/app/reports"
+          className="flex flex-1 flex-col items-center gap-1 py-2 text-xs text-muted-foreground"
+          activeProps={{ className: "text-primary" }}
+        >
+          <BarChart3 className="size-5" /> Reports
+        </Link>
+        <Link
           to="/app/settings"
           className="flex flex-1 flex-col items-center gap-1 py-2 text-xs text-muted-foreground"
           activeProps={{ className: "text-primary" }}
@@ -145,6 +161,13 @@ function SalonShell() {
           Today
         </Link>
         <Link
+          to="/app/reports"
+          className="rounded-full bg-card px-4 py-1.5 text-sm shadow-sm"
+          activeProps={{ className: "bg-primary text-primary-foreground" }}
+        >
+          Reports
+        </Link>
+        <Link
           to="/app/settings"
           className="rounded-full bg-card px-4 py-1.5 text-sm shadow-sm"
           activeProps={{ className: "bg-primary text-primary-foreground" }}
@@ -152,6 +175,7 @@ function SalonShell() {
           Settings
         </Link>
       </nav>
+
     </div>
   );
 }

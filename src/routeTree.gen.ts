@@ -12,15 +12,19 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminshellRouteRouteImport } from './routes/_adminshell/route'
 import { Route as SalonshellRouteRouteImport } from './routes/_salonshell/route'
+import { Route as BookingStatusRouteImport } from './routes/booking-status'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
+import { Route as BookSalonSlugRouteImport } from './routes/book/$salonSlug'
 import { Route as AdminshellAdminIndexRouteImport } from './routes/_adminshell/admin/index'
 import { Route as AdminshellAdminApprovalsRouteImport } from './routes/_adminshell/admin/approvals'
 import { Route as AdminshellAdminPlansRouteImport } from './routes/_adminshell/admin/plans'
 import { Route as AdminshellAdminReportsRouteImport } from './routes/_adminshell/admin/reports'
 import { Route as SalonshellAppIndexRouteImport } from './routes/_salonshell/app/index'
+import { Route as SalonshellAppReportsRouteImport } from './routes/_salonshell/app/reports'
+import { Route as SalonshellAppSettingsRouteImport } from './routes/_salonshell/app/settings'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -33,6 +37,11 @@ const AdminshellRouteRoute = AdminshellRouteRouteImport.update({
 } as any)
 const SalonshellRouteRoute = SalonshellRouteRouteImport.update({
   id: '/_salonshell',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookingStatusRoute = BookingStatusRouteImport.update({
+  id: '/booking-status',
+  path: '/booking-status',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -53,6 +62,11 @@ const SignupRoute = SignupRouteImport.update({
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookSalonSlugRoute = BookSalonSlugRouteImport.update({
+  id: '/book/$salonSlug',
+  path: '/book/$salonSlug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminshellAdminIndexRoute = AdminshellAdminIndexRouteImport.update({
@@ -81,28 +95,46 @@ const SalonshellAppIndexRoute = SalonshellAppIndexRouteImport.update({
   path: '/app/',
   getParentRoute: () => SalonshellRouteRoute,
 } as any)
+const SalonshellAppReportsRoute = SalonshellAppReportsRouteImport.update({
+  id: '/app/reports',
+  path: '/app/reports',
+  getParentRoute: () => SalonshellRouteRoute,
+} as any)
+const SalonshellAppSettingsRoute = SalonshellAppSettingsRouteImport.update({
+  id: '/app/settings',
+  path: '/app/settings',
+  getParentRoute: () => SalonshellRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/booking-status': typeof BookingStatusRoute
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin/login': typeof AdminLoginRoute
+  '/book/$salonSlug': typeof BookSalonSlugRoute
   '/admin/approvals': typeof AdminshellAdminApprovalsRoute
   '/admin/plans': typeof AdminshellAdminPlansRoute
   '/admin/reports': typeof AdminshellAdminReportsRoute
+  '/app/reports': typeof SalonshellAppReportsRoute
+  '/app/settings': typeof SalonshellAppSettingsRoute
   '/admin/': typeof AdminshellAdminIndexRoute
   '/app/': typeof SalonshellAppIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/booking-status': typeof BookingStatusRoute
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin/login': typeof AdminLoginRoute
+  '/book/$salonSlug': typeof BookSalonSlugRoute
   '/admin/approvals': typeof AdminshellAdminApprovalsRoute
   '/admin/plans': typeof AdminshellAdminPlansRoute
   '/admin/reports': typeof AdminshellAdminReportsRoute
+  '/app/reports': typeof SalonshellAppReportsRoute
+  '/app/settings': typeof SalonshellAppSettingsRoute
   '/admin': typeof AdminshellAdminIndexRoute
   '/app': typeof SalonshellAppIndexRoute
 }
@@ -111,13 +143,17 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_adminshell': typeof AdminshellRouteRouteWithChildren
   '/_salonshell': typeof SalonshellRouteRouteWithChildren
+  '/booking-status': typeof BookingStatusRoute
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin/login': typeof AdminLoginRoute
+  '/book/$salonSlug': typeof BookSalonSlugRoute
   '/_adminshell/admin/approvals': typeof AdminshellAdminApprovalsRoute
   '/_adminshell/admin/plans': typeof AdminshellAdminPlansRoute
   '/_adminshell/admin/reports': typeof AdminshellAdminReportsRoute
+  '/_salonshell/app/reports': typeof SalonshellAppReportsRoute
+  '/_salonshell/app/settings': typeof SalonshellAppSettingsRoute
   '/_adminshell/admin/': typeof AdminshellAdminIndexRoute
   '/_salonshell/app/': typeof SalonshellAppIndexRoute
 }
@@ -125,25 +161,33 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/booking-status'
     | '/login'
     | '/reset-password'
     | '/signup'
     | '/admin/login'
+    | '/book/$salonSlug'
     | '/admin/approvals'
     | '/admin/plans'
     | '/admin/reports'
+    | '/app/reports'
+    | '/app/settings'
     | '/admin/'
     | '/app/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/booking-status'
     | '/login'
     | '/reset-password'
     | '/signup'
     | '/admin/login'
+    | '/book/$salonSlug'
     | '/admin/approvals'
     | '/admin/plans'
     | '/admin/reports'
+    | '/app/reports'
+    | '/app/settings'
     | '/admin'
     | '/app'
   id:
@@ -151,13 +195,17 @@ export interface FileRouteTypes {
     | '/'
     | '/_adminshell'
     | '/_salonshell'
+    | '/booking-status'
     | '/login'
     | '/reset-password'
     | '/signup'
     | '/admin/login'
+    | '/book/$salonSlug'
     | '/_adminshell/admin/approvals'
     | '/_adminshell/admin/plans'
     | '/_adminshell/admin/reports'
+    | '/_salonshell/app/reports'
+    | '/_salonshell/app/settings'
     | '/_adminshell/admin/'
     | '/_salonshell/app/'
   fileRoutesById: FileRoutesById
@@ -166,10 +214,12 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminshellRouteRoute: typeof AdminshellRouteRouteWithChildren
   SalonshellRouteRoute: typeof SalonshellRouteRouteWithChildren
+  BookingStatusRoute: typeof BookingStatusRoute
   LoginRoute: typeof LoginRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  BookSalonSlugRoute: typeof BookSalonSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -193,6 +243,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof SalonshellRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/booking-status': {
+      id: '/booking-status'
+      path: '/booking-status'
+      fullPath: '/booking-status'
+      preLoaderRoute: typeof BookingStatusRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -221,6 +278,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/login'
       fullPath: '/admin/login'
       preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/book/$salonSlug': {
+      id: '/book/$salonSlug'
+      path: '/book/$salonSlug'
+      fullPath: '/book/$salonSlug'
+      preLoaderRoute: typeof BookSalonSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_adminshell/admin/': {
@@ -258,6 +322,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SalonshellAppIndexRouteImport
       parentRoute: typeof SalonshellRouteRoute
     }
+    '/_salonshell/app/reports': {
+      id: '/_salonshell/app/reports'
+      path: '/app/reports'
+      fullPath: '/app/reports'
+      preLoaderRoute: typeof SalonshellAppReportsRouteImport
+      parentRoute: typeof SalonshellRouteRoute
+    }
+    '/_salonshell/app/settings': {
+      id: '/_salonshell/app/settings'
+      path: '/app/settings'
+      fullPath: '/app/settings'
+      preLoaderRoute: typeof SalonshellAppSettingsRouteImport
+      parentRoute: typeof SalonshellRouteRoute
+    }
   }
 }
 
@@ -280,10 +358,14 @@ const AdminshellRouteRouteWithChildren = AdminshellRouteRoute._addFileChildren(
 )
 
 interface SalonshellRouteRouteChildren {
+  SalonshellAppReportsRoute: typeof SalonshellAppReportsRoute
+  SalonshellAppSettingsRoute: typeof SalonshellAppSettingsRoute
   SalonshellAppIndexRoute: typeof SalonshellAppIndexRoute
 }
 
 const SalonshellRouteRouteChildren: SalonshellRouteRouteChildren = {
+  SalonshellAppReportsRoute: SalonshellAppReportsRoute,
+  SalonshellAppSettingsRoute: SalonshellAppSettingsRoute,
   SalonshellAppIndexRoute: SalonshellAppIndexRoute,
 }
 
@@ -295,10 +377,12 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminshellRouteRoute: AdminshellRouteRouteWithChildren,
   SalonshellRouteRoute: SalonshellRouteRouteWithChildren,
+  BookingStatusRoute: BookingStatusRoute,
   LoginRoute: LoginRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
   AdminLoginRoute: AdminLoginRoute,
+  BookSalonSlugRoute: BookSalonSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
