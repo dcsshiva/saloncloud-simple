@@ -102,7 +102,6 @@ function SalonDashboard() {
       status: string;
       declineReason?: string;
     }) => {
-      const { data: userData } = await supabase.auth.getUser();
       const { error } = await supabase
         .from("appointments")
         .update({
@@ -113,7 +112,19 @@ function SalonDashboard() {
         })
         .eq("id", appointment.id);
       if (error) throw error;
-      void userData;
+
+      // SMS fallback for customers who did not allow browser alerts.
+      try {
+        await notify({
+          data: {
+            appointmentId: appointment.id,
+            status: status as "approved" | "declined" | "completed" | "no_show",
+            ...(declineReason ? { reason: declineReason } : {}),
+          },
+        });
+      } catch {
+        /* the status change already succeeded; delivery is best effort */
+      }
     },
     onSuccess: () => {
       toast.success("Appointment updated");
@@ -123,6 +134,7 @@ function SalonDashboard() {
     },
     onError: () => toast.error("Could not update the appointment"),
   });
+
 
   if (loadingSalon) return <Skeleton className="h-64 w-full" />;
 
