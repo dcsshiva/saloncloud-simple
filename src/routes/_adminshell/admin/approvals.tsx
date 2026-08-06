@@ -34,7 +34,7 @@ type Submission = {
   id: string;
   salon_id: string;
   plan_id: string;
-  payment_screenshot_url: string;
+  payment_screenshot_url: string | null;
   amount_paid: number | null;
   cycle_override_days: number | null;
   approval_status: string;
@@ -188,7 +188,8 @@ function ApprovalsPage() {
       <div>
         <h1 className="text-2xl font-semibold">Salon approvals</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Signups and renewals wait here until you review the payment screenshot.
+          New signups start on the free trial (no payment proof). Renewals wait here until you review
+          the payment screenshot.
         </p>
       </div>
 
@@ -207,10 +208,16 @@ function ApprovalsPage() {
           {submissions.map((submission) => (
             <Card key={submission.id}>
               <CardContent className="grid gap-4 p-5 sm:grid-cols-[10rem_1fr]">
-                <ProofImage
-                  path={submission.payment_screenshot_url}
-                  onZoom={(url) => setZoom(url)}
-                />
+                {submission.payment_screenshot_url ? (
+                  <ProofImage
+                    path={submission.payment_screenshot_url}
+                    onZoom={(url) => setZoom(url)}
+                  />
+                ) : (
+                  <div className="flex aspect-[3/4] w-full items-center justify-center rounded-md border border-dashed p-3 text-center text-xs text-muted-foreground">
+                    Free trial signup — no payment proof needed
+                  </div>
+                )}
                 <div className="space-y-3">
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <div>

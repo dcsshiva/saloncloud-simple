@@ -48,7 +48,7 @@ type Plan = {
 const planSchema = z
   .object({
     plan_name: z.string().trim().min(1, "Plan name is required").max(80),
-    billing_cycle: z.enum(["monthly", "annual", "manual"]),
+    billing_cycle: z.enum(["trial", "monthly", "annual", "manual"]),
     price: z.number().min(0, "Price cannot be negative").max(10_000_000),
     duration_days: z.number().int().positive().max(3650).nullable(),
   })
@@ -59,7 +59,7 @@ const planSchema = z
 
 const emptyForm = {
   plan_name: "",
-  billing_cycle: "monthly" as "monthly" | "annual" | "manual",
+  billing_cycle: "monthly" as "trial" | "monthly" | "annual" | "manual",
   price: "",
   duration_days: "",
 };
@@ -86,11 +86,16 @@ function PlansPage() {
 
   const savePlan = useMutation({
     mutationFn: async () => {
+      const isTrial = editing?.billing_cycle === "trial";
       const parsed = planSchema.safeParse({
         plan_name: form.plan_name,
-        billing_cycle: form.billing_cycle,
-        price: Number(form.price),
-        duration_days: form.billing_cycle === "manual" ? Number(form.duration_days) || null : null,
+        billing_cycle: isTrial ? "trial" : form.billing_cycle,
+        price: isTrial ? 0 : Number(form.price),
+        duration_days: isTrial
+          ? (editing?.duration_days ?? 30)
+          : form.billing_cycle === "manual"
+            ? Number(form.duration_days) || null
+            : null,
       });
       if (!parsed.success) throw new Error(parsed.error.issues[0]?.message ?? "Invalid plan");
 
@@ -150,7 +155,7 @@ function PlansPage() {
         <div>
           <h1 className="text-2xl font-semibold">Subscription plans</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Monthly, annual, or manual plans with any custom period you define.
+            Free trial, monthly, annual, or manual plans with any custom period you define.
           </p>
         </div>
         <Button
@@ -178,7 +183,9 @@ function PlansPage() {
                   <div>
                     <h2 className="text-lg font-semibold">{plan.plan_name}</h2>
                     <p className="text-sm text-muted-foreground">
-                      {plan.billing_cycle === "manual"
+                      {plan.billing_cycle === "trial"
+                        ? `Free trial · ${plan.duration_days ?? 30} days`
+                        : plan.billing_cycle === "manual"
                         ? `Manual · ${plan.duration_days} days`
                         : plan.billing_cycle === "annual"
                           ? "Annual · 365 days"
@@ -207,14 +214,16 @@ function PlansPage() {
                     <Button variant="ghost" size="icon" onClick={() => startEdit(plan)} aria-label="Edit plan">
                       <Pencil className="size-4" />
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => deletePlan.mutate(plan.id)}
-                      aria-label="Delete plan"
-                    >
-                      <Trash2 className="size-4 text-destructive" />
-                    </Button>
+                    {plan.billing_cycle !== "trial" && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => deletePlan.mutate(plan.id)}
+                        aria-label="Delete plan"
+                      >
+                        <Trash2 className="size-4 text-destructive" />
+                      </Button>
+                    )}
                   </div>
                 </div>
               </CardContent>
@@ -247,6 +256,12 @@ function PlansPage() {
                 onChange={(e) => setForm({ ...form, plan_name: e.target.value })}
               />
             </div>
+            {editing?.billing_cycle === "trial" ? (
+              <p className="rounded-md bg-muted px-3 py-2 text-sm text-muted-foreground">
+                The free trial is the mandatory default for every new salon. Its price is locked at ₹0
+                and it cannot be deleted.
+              </p>
+            ) : (
             <div className="space-y-2">
               <Label htmlFor="billing_cycle">Billing cycle</Label>
               <Select
@@ -265,17 +280,19 @@ function PlansPage() {
                 </SelectContent>
               </Select>
             </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="price">Price</Label>
               <Input
                 id="price"
                 type="number"
                 min="0"
-                value={form.price}
+                disabled={editing?.billing_cycle === "trial"}
+                value={editing?.billing_cycle === "trial" ? "0" : form.price}
                 onChange={(e) => setForm({ ...form, price: e.target.value })}
               />
             </div>
-            {form.billing_cycle === "manual" && (
+            {editing?.billing_cycle !== "trial" && form.billing_cycle === "manual" && (
               <div className="space-y-2">
                 <Label htmlFor="duration_days">Duration (days)</Label>
                 <Input

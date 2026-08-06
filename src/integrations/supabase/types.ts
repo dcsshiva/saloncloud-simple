@@ -292,7 +292,7 @@ export type Database = {
           cycle_override_days: number | null
           end_date: string | null
           id: string
-          payment_screenshot_url: string
+          payment_screenshot_url: string | null
           plan_id: string
           rejection_reason: string | null
           salon_id: string
@@ -307,7 +307,7 @@ export type Database = {
           cycle_override_days?: number | null
           end_date?: string | null
           id?: string
-          payment_screenshot_url: string
+          payment_screenshot_url?: string | null
           plan_id: string
           rejection_reason?: string | null
           salon_id: string
@@ -322,7 +322,7 @@ export type Database = {
           cycle_override_days?: number | null
           end_date?: string | null
           id?: string
-          payment_screenshot_url?: string
+          payment_screenshot_url?: string | null
           plan_id?: string
           rejection_reason?: string | null
           salon_id?: string
@@ -356,7 +356,7 @@ export type Database = {
           longitude: number | null
           mobile_number: string
           owner_name: string
-          owner_user_id: string
+          owner_user_id: string | null
           salon_name: string
           slug: string
           status: string
@@ -373,7 +373,7 @@ export type Database = {
           longitude?: number | null
           mobile_number: string
           owner_name: string
-          owner_user_id: string
+          owner_user_id?: string | null
           salon_name: string
           slug: string
           status?: string
@@ -390,7 +390,7 @@ export type Database = {
           longitude?: number | null
           mobile_number?: string
           owner_name?: string
-          owner_user_id?: string
+          owner_user_id?: string | null
           salon_name?: string
           slug?: string
           status?: string

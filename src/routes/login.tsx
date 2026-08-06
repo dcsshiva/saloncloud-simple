@@ -12,15 +12,15 @@ export const Route = createFileRoute("/login")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Salon Sign In — SalonBook" },
-      { name: "description", content: "Sign in to manage your salon's appointments, services and staff." },
-      { property: "og:title", content: "Salon Sign In — SalonBook" },
-      { property: "og:description", content: "Sign in to manage your salon on SalonBook." },
+      { title: "Sign In — SalonBook" },
+      { name: "description", content: "Sign in to SalonBook to manage your salon's appointments, services and staff." },
+      { property: "og:title", content: "Sign In — SalonBook" },
+      { property: "og:description", content: "Sign in to SalonBook." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  component: SalonLogin,
+  component: LoginPage,
 });
 
 const schema = z.object({
@@ -28,11 +28,12 @@ const schema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters").max(72),
 });
 
-function SalonLogin() {
+function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
+  const [pending, setPending] = useState(false);
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -42,13 +43,49 @@ function SalonLogin() {
       return;
     }
     setBusy(true);
-    const { error } = await supabase.auth.signInWithPassword(parsed.data);
-    setBusy(false);
-    if (error) {
-      toast.error(error.message);
-      return;
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
+      if (error) throw error;
+      const userId = data.user.id;
+
+      const { data: roles } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId)
+        .eq("role", "super_admin");
+      if (roles && roles.length > 0) {
+        void navigate({ to: "/admin" });
+        return;
+      }
+
+      const { data: staff } = await supabase
+        .from("salon_staff")
+        .select("id, salon_id")
+        .eq("user_id", userId)
+        .eq("is_active", true)
+        .maybeSingle();
+
+      if (staff) {
+        const { data: salon } = await supabase
+          .from("salons")
+          .select("status")
+          .eq("id", staff.salon_id)
+          .maybeSingle();
+        if (salon?.status === "pending_approval") {
+          setPending(true);
+          return;
+        }
+        void navigate({ to: "/app" });
+        return;
+      }
+
+      await supabase.auth.signOut();
+      toast.error("This account isn't linked to any salon or admin access");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not sign in");
+    } finally {
+      setBusy(false);
     }
-    void navigate({ to: "/app" });
   };
 
   const resetPassword = async () => {
@@ -62,24 +99,58 @@ function SalonLogin() {
     toast[error ? "error" : "success"](error ? error.message : "Password reset link sent");
   };
 
+  if (pending) {
+    return (
+      <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4 py-12">
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-display text-2xl">Pending approval</CardTitle>
+            <CardDescription>
+              Your salon is under review. You'll be notified once approved.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={async () => {
+                await supabase.auth.signOut();
+                setPending(false);
+              }}
+            >
+              Sign out
+            </Button>
+          </CardContent>
+        </Card>
+      </main>
+    );
+  }
+
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4 py-12">
       <Card>
         <CardHeader>
-          <CardTitle className="font-display text-2xl">Salon sign in</CardTitle>
-          <CardDescription>Owners and executives use the same login.</CardDescription>
+          <CardTitle className="font-display text-2xl">Sign in</CardTitle>
+          <CardDescription>Use your SalonBook email and password.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={submit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Input
+                id="email"
+                type="email"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
+                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
