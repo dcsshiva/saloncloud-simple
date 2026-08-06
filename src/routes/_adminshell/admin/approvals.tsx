@@ -14,6 +14,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { addDays, currency, cycleDays, isoDate } from "@/lib/subscription";
+import { emailSalonDecision } from "@/lib/salon-email.functions";
+
 
 export const Route = createFileRoute("/_adminshell/admin/approvals")({
   head: () => ({
@@ -116,7 +118,22 @@ function ApprovalsPage() {
         .update({ status: "active" })
         .eq("id", submission.salon_id);
       if (salonError) throw salonError;
+
+      // Email is a courtesy — never fail the approval because it bounced.
+      try {
+        await emailSalonDecision({
+          data: {
+            salonId: submission.salon_id,
+            decision: "approved",
+            planName: plan.plan_name,
+            endDate: isoDate(addDays(start, days)),
+          },
+        });
+      } catch (err) {
+        console.error("Approval email failed", err);
+      }
     },
+
     onSuccess: () => {
       toast.success("Salon approved and now live on the booking directory");
       invalidate();
@@ -147,7 +164,16 @@ function ApprovalsPage() {
         .update({ status: "rejected" })
         .eq("id", rejecting.salon_id);
       if (salonError) throw salonError;
+
+      try {
+        await emailSalonDecision({
+          data: { salonId: rejecting.salon_id, decision: "rejected", reason: parsed.data },
+        });
+      } catch (err) {
+        console.error("Rejection email failed", err);
+      }
     },
+
     onSuccess: () => {
       toast.success("Rejection sent to the salon owner");
       setRejecting(null);
