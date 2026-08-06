@@ -146,7 +146,13 @@ function BookingPage() {
   }, [cooldown]);
 
   const sendCode = useMutation({
-    mutationFn: async () => send({ data: { mobile, purpose: "appointment_booking" } }),
+    mutationFn: async () => send({
+      data: {
+        mobile,
+        purpose: "appointment_booking",
+        context: `${name} ${salon?.salon_name ?? ""}`.trim().slice(0, 30),
+      },
+    }),
     onSuccess: (result) => {
       setOtpSent(true);
       setCooldown(30);
