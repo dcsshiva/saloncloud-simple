@@ -164,7 +164,16 @@ function ApprovalsPage() {
         .update({ status: "rejected" })
         .eq("id", rejecting.salon_id);
       if (salonError) throw salonError;
+
+      try {
+        await emailSalonDecision({
+          data: { salonId: rejecting.salon_id, decision: "rejected", reason: parsed.data },
+        });
+      } catch (err) {
+        console.error("Rejection email failed", err);
+      }
     },
+
     onSuccess: () => {
       toast.success("Rejection sent to the salon owner");
       setRejecting(null);
