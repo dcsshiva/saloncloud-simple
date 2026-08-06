@@ -52,7 +52,7 @@ function Index() {
       <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-6">
         <span className="font-display text-xl font-semibold tracking-tight">SalonBook</span>
         <Button asChild variant="ghost" size="sm">
-          <Link to="/admin/login">Admin login</Link>
+          <Link to="/login">Sign in</Link>
         </Button>
       </header>
 
@@ -69,7 +69,7 @@ function Index() {
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Button asChild size="lg">
-            <Link to="/admin/login">Platform admin</Link>
+            <Link to="/signup">List your salon</Link>
           </Button>
         </div>
       </section>
