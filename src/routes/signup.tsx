@@ -74,7 +74,9 @@ function SignupPage() {
     }
     setBusy(true);
     try {
-      await sendCode({ data: { email, salonName: form.salonName.trim() || undefined } });
+      await sendCode({
+        data: form.salonName.trim() ? { email, salonName: form.salonName.trim() } : { email },
+      });
       setOtpSent(true);
       setVerified(false);
       toast.success("We emailed you a 4-digit code");
