@@ -34,6 +34,9 @@ export const notifyAppointmentStatus = createServerFn({ method: "POST" })
           ? `Your SalonBook appointment on ${when} was declined${data.reason ? `: ${data.reason}` : ""}. Please rebook.`
           : `Your SalonBook appointment on ${when} is marked ${data.status.replace("_", " ")}.`;
 
-    const result = await sendSms(appointment.customer_mobile, message);
+    const templateId = process.env["SOFTSMS_TXN_TEMPLATE_ID"];
+    if (!templateId) return { sent: false };
+
+    const result = await sendSms(appointment.customer_mobile, message, templateId);
     return { sent: result.delivered };
   });

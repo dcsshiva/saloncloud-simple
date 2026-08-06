@@ -39,7 +39,21 @@ export const sendOtp = createServerFn({ method: "POST" })
     });
     if (error) throw new Error("Could not create the verification code");
 
-    const sms = await sendSms(data.mobile, `Your SalonBook verification code is ${code}. It expires in 5 minutes.`);
+    // Must match the approved DLT template wording character-for-character.
+    const templateId = process.env["SOFTSMS_OTP_TEMPLATE_ID"];
+    const sms = await sendSms(
+      data.mobile,
+      `Your SalonBook verification code is ${code}. It expires in 5 minutes.`,
+      templateId,
+    );
+
+    // Only reveal the code when no SMS provider is configured (preview/dev).
+    const configured = Boolean(
+      process.env["SOFTSMS_API_KEY"] && process.env["SOFTSMS_SENDER_ID"] && process.env["SOFTSMS_PEID"] && templateId,
+    );
+    if (configured && !sms.delivered) {
+      throw new Error("We couldn't send the SMS right now. Please try again in a moment.");
+    }
 
     return { sent: true, delivered: sms.delivered, previewCode: sms.delivered ? null : code };
   });
