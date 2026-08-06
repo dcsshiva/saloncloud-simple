@@ -1,37 +1,78 @@
 /**
- * SMS delivery for mobile OTP codes.
+ * SMS delivery through the SoftSMS gateway (https://softsms.in).
  *
- * Uses the Twilio connector through the Lovable connector gateway when it is
- * configured. When no SMS provider is connected yet, the code is logged on the
- * server and returned to the caller so the flow is testable in preview.
+ * India's DLT rules require a registered sender ID, principal entity ID and a
+ * template ID whose text matches the message character-for-character. All four
+ * values are stored as backend secrets and read at call time (the Worker
+ * runtime injects env per request, so never read them at module scope).
+ *
+ * When the credentials are missing the code is logged server-side and the
+ * caller can surface it in preview so the flow stays testable.
  */
 export type SmsResult = { delivered: boolean; devCode?: string };
 
-export async function sendSms(mobile: string, message: string): Promise<SmsResult> {
-  const lovableKey = process.env["LOVABLE_API_KEY"];
-  const twilioKey = process.env["TWILIO_API_KEY"];
-  const from = process.env["TWILIO_FROM_NUMBER"];
+const ENDPOINT = "https://softsms.in/app/smsapi/index.php";
 
-  if (!lovableKey || !twilioKey || !from) {
+/** SoftSMS expects bare digits; strip +, spaces and a leading 91/0 prefix. */
+function normaliseMobile(mobile: string): string {
+  const digits = mobile.replace(/\D/g, "");
+  if (digits.length === 12 && digits.startsWith("91")) return digits.slice(2);
+  if (digits.length === 11 && digits.startsWith("0")) return digits.slice(1);
+  return digits;
+}
+
+function looksLikeFailure(body: string): boolean {
+  const text = body.toLowerCase();
+  return (
+    text.includes("error") ||
+    text.includes("invalid") ||
+    text.includes("failed") ||
+    text.includes("insufficient") ||
+    text.includes("\"status\":\"error\"")
+  );
+}
+
+/**
+ * Sends one SMS. `templateId` must be the DLT template registered for this
+ * exact message wording. Returns `delivered: false` (never throws) so callers
+ * can fall back gracefully instead of losing the OTP row they just created.
+ */
+export async function sendSms(
+  mobile: string,
+  message: string,
+  templateId?: string,
+): Promise<SmsResult> {
+  const key = process.env["SOFTSMS_API_KEY"];
+  const senderId = process.env["SOFTSMS_SENDER_ID"];
+  const peid = process.env["SOFTSMS_PEID"];
+
+  if (!key || !senderId || !peid || !templateId) {
     console.info(`[sms:not-configured] to=${mobile} message=${message}`);
     return { delivered: false };
   }
 
-  const response = await fetch("https://connector-gateway.lovable.dev/twilio/Messages.json", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${lovableKey}`,
-      "X-Connection-Api-Key": twilioKey,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({ To: mobile, From: from, Body: message }),
+  const params = new URLSearchParams({
+    key,
+    type: "text",
+    contacts: normaliseMobile(mobile),
+    senderid: senderId,
+    peid,
+    templateid: templateId,
+    msg: message,
   });
 
-  if (!response.ok) {
-    const body = await response.text();
-    console.error(`[sms:failed ${response.status}] ${body}`);
-    throw new Error(`Could not send the SMS [${response.status}]`);
-  }
+  try {
+    const response = await fetch(`${ENDPOINT}?${params.toString()}`, { method: "GET" });
+    const body = (await response.text()).trim();
 
-  return { delivered: true };
+    if (!response.ok || looksLikeFailure(body)) {
+      console.error(`[sms:failed ${response.status}] ${body}`);
+      return { delivered: false };
+    }
+
+    return { delivered: true };
+  } catch (error) {
+    console.error(`[sms:error] ${(error as Error).message}`);
+    return { delivered: false };
+  }
 }
