@@ -10,9 +10,9 @@ import { ReauthenticationEmail } from '@/lib/email-templates/reauthentication'
 
 // Configuration
 const SITE_NAME = "saloncloud-simple"
-const SENDER_DOMAIN = "notify.salon.vaanavil.org.in"
-const ROOT_DOMAIN = "salon.vaanavil.org.in"
-const FROM_DOMAIN = "notify.salon.vaanavil.org.in"
+const SENDER_DOMAIN = "notify.smail.vaanavil.org.in"
+const ROOT_DOMAIN = "smail.vaanavil.org.in"
+const FROM_DOMAIN = "notify.smail.vaanavil.org.in"
 const SITE_URL = `https://${ROOT_DOMAIN}`
 
 // The SDK handler owns verification, dispatch, and retry semantics; this file
