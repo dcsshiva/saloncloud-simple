@@ -14,6 +14,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { addDays, currency, cycleDays, isoDate } from "@/lib/subscription";
+import { emailSalonDecision } from "@/lib/salon-email.functions";
+
 
 export const Route = createFileRoute("/_adminshell/admin/approvals")({
   head: () => ({
