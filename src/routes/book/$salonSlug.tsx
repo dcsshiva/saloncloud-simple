@@ -399,10 +399,20 @@ function BookingPage() {
           <Button
             variant="outline"
             className="w-full"
-            disabled={sendCode.isPending || !slot || name.trim().length < 2 || mobile.trim().length < 10}
+            disabled={
+              sendCode.isPending ||
+              cooldown > 0 ||
+              !slot ||
+              name.trim().length < 2 ||
+              mobile.trim().length < 10
+            }
             onClick={() => sendCode.mutate()}
           >
-            {otpSent ? "Resend code" : "Send OTP"}
+            {cooldown > 0
+              ? `Resend code in ${cooldown}s`
+              : otpSent
+                ? "Resend code"
+                : "Send OTP"}
           </Button>
 
           {otpSent && (
