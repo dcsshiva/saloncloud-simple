@@ -10,8 +10,15 @@ const purposeSchema = z.enum(["appointment_booking", "salon_signup"]);
 
 /** Sends a 6-digit OTP to the given mobile number and stores it for ~5 minutes. */
 export const sendOtp = createServerFn({ method: "POST" })
-  .inputValidator((input: { mobile: string; purpose: string }) =>
-    z.object({ mobile: mobileSchema, purpose: purposeSchema }).parse(input),
+  .inputValidator((input: { mobile: string; purpose: string; context?: string }) =>
+    z
+      .object({
+        mobile: mobileSchema,
+        purpose: purposeSchema,
+        // Second DLT variable: "<guest name> <salon name>", capped at 30 chars.
+        context: z.string().trim().max(120).optional(),
+      })
+      .parse(input),
   )
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -41,9 +48,11 @@ export const sendOtp = createServerFn({ method: "POST" })
 
     // Must match the approved DLT template wording character-for-character.
     const templateId = process.env["SOFTSMS_OTP_TEMPLATE_ID"];
+    // DLT template: "Dear user, your verification code is {#var#} Complete verification {#var#} sms"
+    const context = (data.context ?? "SalonBook").replace(/\s+/g, " ").trim().slice(0, 30);
     const sms = await sendSms(
       data.mobile,
-      `Your SalonBook verification code is ${code}. It expires in 5 minutes.`,
+      `Dear user, your verification code is ${code} Complete verification ${context} sms`,
       templateId,
     );
 
