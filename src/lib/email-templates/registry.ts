@@ -19,4 +19,5 @@ export interface TemplateEntry {
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'salon-approved': salonApproved,
   'salon-rejected': salonRejected,
+  'signup-otp': signupOtp,
 }
