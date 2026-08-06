@@ -138,10 +138,18 @@ function BookingPage() {
     });
   }, [service, availability, date, salon?.timezone]);
 
+  const [cooldown, setCooldown] = useState(0);
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = setTimeout(() => setCooldown((n) => n - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [cooldown]);
+
   const sendCode = useMutation({
     mutationFn: async () => send({ data: { mobile, purpose: "appointment_booking" } }),
     onSuccess: (result) => {
       setOtpSent(true);
+      setCooldown(30);
       toast.success(
         result.previewCode
           ? `SMS is not configured yet — your code is ${result.previewCode}`
