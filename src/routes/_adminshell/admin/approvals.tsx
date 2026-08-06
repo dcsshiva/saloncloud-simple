@@ -116,7 +116,22 @@ function ApprovalsPage() {
         .update({ status: "active" })
         .eq("id", submission.salon_id);
       if (salonError) throw salonError;
+
+      // Email is a courtesy — never fail the approval because it bounced.
+      try {
+        await emailSalonDecision({
+          data: {
+            salonId: submission.salon_id,
+            decision: "approved",
+            planName: plan.plan_name,
+            endDate: isoDate(addDays(start, days)),
+          },
+        });
+      } catch (err) {
+        console.error("Approval email failed", err);
+      }
     },
+
     onSuccess: () => {
       toast.success("Salon approved and now live on the booking directory");
       invalidate();
