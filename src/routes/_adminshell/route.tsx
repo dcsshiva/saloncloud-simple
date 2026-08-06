@@ -8,13 +8,13 @@ export const Route = createFileRoute("/_adminshell")({
   ssr: false,
   beforeLoad: async () => {
     const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) throw redirect({ to: "/admin/login" });
+    if (error || !data.user) throw redirect({ to: "/login" });
     const { data: roles } = await supabase
       .from("user_roles")
       .select("role")
       .eq("user_id", data.user.id)
       .eq("role", "super_admin");
-    if (!roles || roles.length === 0) throw redirect({ to: "/admin/login" });
+    if (!roles || roles.length === 0) throw redirect({ to: "/login" });
     return { adminUser: data.user };
   },
   component: AdminShell,
@@ -35,7 +35,7 @@ function AdminShell() {
     await queryClient.cancelQueries();
     queryClient.clear();
     await supabase.auth.signOut();
-    void navigate({ to: "/admin/login", replace: true });
+    void navigate({ to: "/login", replace: true });
   };
 
   return (
