@@ -51,9 +51,14 @@ function Index() {
     <main className="min-h-screen">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-6">
         <span className="font-display text-xl font-semibold tracking-tight">SalonBook</span>
-        <Button asChild variant="ghost" size="sm">
-          <Link to="/login">Sign in</Link>
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button asChild variant="ghost" size="sm">
+            <Link to="/salons">Book a salon</Link>
+          </Button>
+          <Button asChild variant="ghost" size="sm">
+            <Link to="/login">Sign in</Link>
+          </Button>
+        </div>
       </header>
 
       <section className="mx-auto max-w-6xl px-5 pb-16 pt-6 sm:pt-14">
@@ -69,10 +74,14 @@ function Index() {
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Button asChild size="lg">
+            <Link to="/salons">Book an appointment</Link>
+          </Button>
+          <Button asChild size="lg" variant="outline">
             <Link to="/signup">List your salon</Link>
           </Button>
         </div>
       </section>
+
 
       <section className="border-t bg-card">
         <div className="mx-auto grid max-w-6xl gap-4 px-5 py-14 sm:grid-cols-2">

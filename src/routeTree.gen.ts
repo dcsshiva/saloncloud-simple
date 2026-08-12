@@ -15,6 +15,7 @@ import { Route as SalonshellRouteRouteImport } from './routes/_salonshell/route'
 import { Route as BookingStatusRouteImport } from './routes/booking-status'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SalonsRouteImport } from './routes/salons'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as BookSalonSlugRouteImport } from './routes/book/$salonSlug'
 import { Route as AdminshellAdminIndexRouteImport } from './routes/_adminshell/admin/index'
@@ -54,6 +55,11 @@ const LoginRoute = LoginRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SalonsRoute = SalonsRouteImport.update({
+  id: '/salons',
+  path: '/salons',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SignupRoute = SignupRouteImport.update({
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/booking-status': typeof BookingStatusRoute
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/salons': typeof SalonsRoute
   '/signup': typeof SignupRoute
   '/book/$salonSlug': typeof BookSalonSlugRoute
   '/admin/approvals': typeof AdminshellAdminApprovalsRoute
@@ -142,6 +149,7 @@ export interface FileRoutesByTo {
   '/booking-status': typeof BookingStatusRoute
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/salons': typeof SalonsRoute
   '/signup': typeof SignupRoute
   '/book/$salonSlug': typeof BookSalonSlugRoute
   '/admin/approvals': typeof AdminshellAdminApprovalsRoute
@@ -163,6 +171,7 @@ export interface FileRoutesById {
   '/booking-status': typeof BookingStatusRoute
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/salons': typeof SalonsRoute
   '/signup': typeof SignupRoute
   '/book/$salonSlug': typeof BookSalonSlugRoute
   '/_adminshell/admin/approvals': typeof AdminshellAdminApprovalsRoute
@@ -183,6 +192,7 @@ export interface FileRouteTypes {
     | '/booking-status'
     | '/login'
     | '/reset-password'
+    | '/salons'
     | '/signup'
     | '/book/$salonSlug'
     | '/admin/approvals'
@@ -201,6 +211,7 @@ export interface FileRouteTypes {
     | '/booking-status'
     | '/login'
     | '/reset-password'
+    | '/salons'
     | '/signup'
     | '/book/$salonSlug'
     | '/admin/approvals'
@@ -221,6 +232,7 @@ export interface FileRouteTypes {
     | '/booking-status'
     | '/login'
     | '/reset-password'
+    | '/salons'
     | '/signup'
     | '/book/$salonSlug'
     | '/_adminshell/admin/approvals'
@@ -242,6 +254,7 @@ export interface RootRouteChildren {
   BookingStatusRoute: typeof BookingStatusRoute
   LoginRoute: typeof LoginRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SalonsRoute: typeof SalonsRoute
   SignupRoute: typeof SignupRoute
   BookSalonSlugRoute: typeof BookSalonSlugRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
@@ -291,6 +304,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/salons': {
+      id: '/salons'
+      path: '/salons'
+      fullPath: '/salons'
+      preLoaderRoute: typeof SalonsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/signup': {
@@ -421,6 +441,7 @@ const rootRouteChildren: RootRouteChildren = {
   BookingStatusRoute: BookingStatusRoute,
   LoginRoute: LoginRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SalonsRoute: SalonsRoute,
   SignupRoute: SignupRoute,
   BookSalonSlugRoute: BookSalonSlugRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
