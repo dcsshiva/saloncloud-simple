@@ -226,8 +226,9 @@ function BookingPage() {
           This booking page is not live yet. Please check the link with the salon.
         </p>
         <Button asChild className="mt-4">
-          <Link to="/">Back to SalonBook</Link>
+          <Link to="/salons">Browse salons</Link>
         </Button>
+
       </main>
     );
   }
